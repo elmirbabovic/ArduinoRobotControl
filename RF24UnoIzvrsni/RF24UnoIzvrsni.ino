@@ -13,7 +13,7 @@
 int radioNumber = 2;
 
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
-RF24 radio(7,8);
+RF24 radio(8,7);
 /**********************************************************/
 
 byte addresses[][6] = {"C1","R1","R2","R3","R4"};
@@ -29,7 +29,7 @@ void setup() {
 
   // Set the PA Level low to prevent power supply related issues since this is a
  // getting_started sketch, and the likelihood of close proximity of the devices. RF24_PA_MAX is default.
-  radio.setPALevel(RF24_PA_HIGH);
+  radio.setPALevel(RF24_PA_LOW);
   
   // Open a writing and reading pipe on each radio, with opposite addresses
   if(radioNumber==2){
@@ -42,15 +42,16 @@ void setup() {
   
   // Start the radio listening for data
   radio.startListening();
-  pinMode(2,OUTPUT);
+ pinMode(2,OUTPUT);
   pinMode(3,OUTPUT);
   pinMode(4,OUTPUT);
   pinMode(5,OUTPUT);
+  /*
   pinMode(6,OUTPUT);
     pinMode(9,OUTPUT);
   pinMode(10,OUTPUT);
   pinMode(11,OUTPUT);
-  
+  */
   digitalWrite(2,HIGH);
   delay(200);
   digitalWrite(2,LOW);
@@ -81,16 +82,24 @@ void loop() {
       int desniKomanda=prijemniString.substring(7,10).toInt();
        Serial.println(lijeviKomanda);
         Serial.println(desniKomanda);
+               Serial.println("lijeviKomanda");
+      analogWrite(2,lijeviKomanda);
+     Serial.println("desniKomanda");
+      analogWrite(4,desniKomanda);
+      delay(2000);
+      analogWrite(2,0);
+      analogWrite(4,0);
+   
+             Serial.println(lijeviKomanda);
+             
+        Serial.println(desniKomanda);
+         Serial.println("lijeviKomanda");
       analogWrite(3,lijeviKomanda);
-      analogWrite(6,desniKomanda);
-      delay(1000);
+          Serial.println("desniKomanda");
+      analogWrite(5,desniKomanda);
+      delay(2000);
       analogWrite(3,0);
-      analogWrite(6,0);
-      analogWrite(5,lijeviKomanda);
-      analogWrite(9,desniKomanda);
-      delay(1000);
       analogWrite(5,0);
-      analogWrite(9,0);
       
     }
      // Serial.println("Kraj komande");
