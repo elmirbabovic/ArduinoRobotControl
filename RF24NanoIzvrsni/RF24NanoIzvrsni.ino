@@ -11,6 +11,7 @@
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
 int radioNumber = 2;
+char prijemniText[13] = "";
 
 /* Hardware configuration: Set up nRF24L01 radio on SPI bus plus pins 7 & 8 */
 RF24 radio(7,8);
@@ -29,7 +30,7 @@ void setup() {
 
   // Set the PA Level low to prevent power supply related issues since this is a
  // getting_started sketch, and the likelihood of close proximity of the devices. RF24_PA_MAX is default.
-  radio.setPALevel(RF24_PA_HIGH);
+  radio.setPALevel(RF24_PA_LOW);
   
   // Open a writing and reading pipe on each radio, with opposite addresses
   if(radioNumber==2){
@@ -42,15 +43,16 @@ void setup() {
   
   // Start the radio listening for data
   radio.startListening();
-  pinMode(2,OUTPUT);
+ pinMode(2,OUTPUT);
   pinMode(3,OUTPUT);
   pinMode(4,OUTPUT);
   pinMode(5,OUTPUT);
+  /*
   pinMode(6,OUTPUT);
     pinMode(9,OUTPUT);
   pinMode(10,OUTPUT);
   pinMode(11,OUTPUT);
-  
+  */
   digitalWrite(2,HIGH);
   delay(200);
   digitalWrite(2,LOW);
@@ -67,10 +69,7 @@ void setup() {
 
 void loop() {
     radio.startListening();
-    unsigned long prijemnaPoruka;
 
-    String priTex;
-    char prijemniText[13] = "";
     if( radio.available()){
       while (radio.available()) {  
     radio.read(&prijemniText, sizeof(prijemniText));
@@ -79,103 +78,28 @@ void loop() {
       String prijemniString(prijemniText);
       int lijeviKomanda=prijemniString.substring(3,6).toInt();
       int desniKomanda=prijemniString.substring(7,10).toInt();
-       Serial.println(lijeviKomanda);
-        Serial.println(desniKomanda);
+
+      //Serial.print("lijeviKomanda ");
+      //Serial.println(lijeviKomanda);
       analogWrite(3,lijeviKomanda);
-      analogWrite(6,desniKomanda);
-      delay(1000);
-      analogWrite(3,0);
-      analogWrite(6,0);
-      analogWrite(5,lijeviKomanda);
-      analogWrite(9,desniKomanda);
-      delay(1000);
-      analogWrite(5,0);
-      analogWrite(9,0);
+      //Serial.print("desniKomanda ");
+      //Serial.println(desniKomanda);
+      analogWrite(5,desniKomanda);
+   
+      delay(500);
+      digitalWrite(5,LOW);
+     digitalWrite(3,LOW);
+    prijemniString="";
+   for(int i=0; i<13;i++)
+   {
+      prijemniText [i]=' ';
+   }
+  
       
     }
      // Serial.println("Kraj komande");
 /*  radio.flush_rx();
 radio.flush_tx();*/
     
-  /*  if( radio.available()){
-                                                                    // Variable for the received timestamp
-      while (radio.available()) {                                   // While there is data ready
-        radio.read( &prijemnaPoruka, sizeof(unsigned long) );             // Get the payload
-      }*/
-    /*  radio.stopListening();                                        // First, stop listening so we can talk   
-      radio.write( &prijemnaPoruka, sizeof(unsigned long) );              // Send the final one back.      
-      radio.startListening();                                       // Now, resume listening so we catch the next packets.     
-      Serial.print(F("Sent response "));
-      Serial.println(prijemnaPoruka); 
- */
 
-   //}
-        //Serial.println(prijemnaPoruka); 
-        /* 
-if(prijemnaPoruka<10000)
-{
-if (prijemnaPoruka%10==6)
-{
-  Serial.println("Bocno stop");
-
-    digitalWrite(2,LOW);
-    digitalWrite(3,LOW);
-    digitalWrite(4,LOW);
-    digitalWrite(5,LOW);
-        analogWrite(10,0);
-  analogWrite(11,0);
-  
-  }
-else if (prijemnaPoruka%10==5)
-{
-  Serial.println("Ravno stop");
-
-    digitalWrite(2,LOW);
-    digitalWrite(3,LOW);
-    digitalWrite(4,LOW);
-    digitalWrite(5,LOW);
-            analogWrite(10,0);
-  analogWrite(11,0);
- 
-  }
-  else if (prijemnaPoruka%10==1)
-{
-  
-  Serial.println("Naprijed");
-    digitalWrite(2,HIGH);
-    digitalWrite(4,HIGH);
-    analogWrite(10,prijemnaPoruka/10);
-  analogWrite(11,prijemnaPoruka/10);
-  }
-    else if (prijemnaPoruka%10==2)
-{
-  Serial.println("Nazad");
-    digitalWrite(3,HIGH);
-      digitalWrite(5,HIGH);
-          analogWrite(10,prijemnaPoruka/10);
-  analogWrite(11,prijemnaPoruka/10);
-  }
-    else if (prijemnaPoruka%10==3)
-{
-  Serial.println("Lijevo");
-    digitalWrite(3,HIGH);
-      digitalWrite(4,HIGH);
-          analogWrite(10,prijemnaPoruka/10);
-  analogWrite(11,prijemnaPoruka/10);
-  }
-    else if (prijemnaPoruka%10==4)
-{
-  Serial.println("Desno");
-    digitalWrite(2,HIGH);
-      digitalWrite(5,HIGH);
-      analogWrite(10,prijemnaPoruka/10);
-  analogWrite(11,prijemnaPoruka/10);
-  }
-    else 
-{
-  Serial.println(prijemnaPoruka);
-  }
-}
-//radio.stopListening();
-delay(50);*/
 } // Loop
