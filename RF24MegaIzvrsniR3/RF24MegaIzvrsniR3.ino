@@ -7,7 +7,8 @@
 
 #include <SPI.h>
 #include "RF24.h"
-char prijemniText[13] = "";
+char prijemniText[60] = "";
+int robotID;
 
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
@@ -24,8 +25,12 @@ byte addresses[][6] = {"C1","R1","R2","R3","R4"};
 bool role = 0;
 
 void setup() {
+
+  robotID=3; //1-4
+  
   Serial.begin(115200);
-  Serial.println(F("Start izvrsnog"));
+  Serial.print(F("Start izvrsnog: Robot ID "));
+  Serial.println(robotID);
   
   radio.begin();
 
@@ -36,7 +41,7 @@ void setup() {
   // Open a writing and reading pipe on each radio, with opposite addresses
   if(radioNumber==2){
     radio.openWritingPipe(addresses[0]);
-    radio.openReadingPipe(1,addresses[3]);
+    radio.openReadingPipe(1,addresses[2]);
   }else{
     radio.openWritingPipe(addresses[0]);
     radio.openReadingPipe(1,addresses[1]);
@@ -79,10 +84,12 @@ void loop() {
       while (radio.available()) {  
     radio.read(&prijemniText, sizeof(prijemniText));
       }
-      //Serial.println(prijemniText);
+      Serial.println(prijemniText);
       String prijemniString(prijemniText);
-      int desniKomanda=prijemniString.substring(3,6).toInt();
-      int lijeviKomanda=prijemniString.substring(7,10).toInt();
+      int izbor = prijemniString.substring(21,22).toInt();
+      if(izbor==robotID){
+      int desniKomanda=prijemniString.substring(23,26).toInt();
+      int lijeviKomanda=prijemniString.substring(27,30).toInt();
 
       //Serial.print("lijeviKomanda na 3 ");
       //Serial.println(lijeviKomanda);
@@ -90,10 +97,11 @@ void loop() {
       //Serial.print("desniKomanda na 5 ");
       //Serial.println(desniKomanda);
       analogWrite(5,desniKomanda);
-   //Serial.println(prijemniString);
+   Serial.println(prijemniString);
       delay(100);
       digitalWrite(5,LOW);
      digitalWrite(3,LOW);
+      }
    prijemniString="";
    for(int i=0; i<13;i++)
    {

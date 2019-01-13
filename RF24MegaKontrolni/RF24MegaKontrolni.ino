@@ -12,7 +12,7 @@ const int analogInPin2 = A5;
 String poruka="TST-123456";
 String ulazSaSerijskogPorta = ""; 
 bool krajUlazaSaSerijskogPorta = false;
-char tekstZaSlanje[13];
+char tekstZaSlanje[60];
 /****************** User Config ***************************/
 /***      Set this radio as radio number 0 or 1         ***/
 bool radioNumber = 0;
@@ -48,20 +48,21 @@ void setup() {
   
   // Start the radio listening for data
   radio.startListening();
+  radio.stopListening();
 }
 
 void loop() {
-  radio.stopListening();  
+    
 if(krajUlazaSaSerijskogPorta){
   //Serial.println("String: "+ulazSaSerijskogPorta);
 /*  for(int i = 0; i<sizeof(ulazSaSerijskogPorta);i++)
 {tekstZaSlanje[i]=ulazSaSerijskogPorta[i];
   }*/
-  ulazSaSerijskogPorta.toCharArray(tekstZaSlanje,13);
-  int izbor = ulazSaSerijskogPorta.substring(1,2).toInt();
+  ulazSaSerijskogPorta.toCharArray(tekstZaSlanje,60);
+  //int izbor = ulazSaSerijskogPorta.substring(1,2).toInt();
   ulazSaSerijskogPorta="";
-   radio.openWritingPipe(addresses[izbor]);
-   radio.openReadingPipe(1,addresses[0]);
+   //radio.openWritingPipe(addresses[izbor]);
+   //radio.openReadingPipe(1,addresses[0]);
  // Serial.print("char[] = (");
 // Serial.print(tekstZaSlanje);
  //Serial.println(")");
